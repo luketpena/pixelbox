@@ -5,7 +5,6 @@
 }
 
 .pb-frame {
-  /*background: url('https://i.ibb.co/BB16CGL/layer1.png');*/
   background-size: cover;
   margin: 0 auto;
   overflow: hidden;
@@ -20,8 +19,6 @@
 }
 
 .pb-layer {
-  height: 100%;
-  width: 100%;
   image-rendering: pixelated;
   isolation: isolate;
   position: absolute;
