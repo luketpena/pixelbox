@@ -42,4 +42,17 @@ function pbInit () {
     [32,8], //Overlap width and height
     [512,256] //Display width and height
   );
+
+  pbCreate('#frame-2','https://i.ibb.co/BB16CGL/layer1.png',
+    [ //Image URLs
+      'https://i.ibb.co/wWHn1gj/layer2.png',
+      'https://i.ibb.co/j61b2c3/layer3.png',
+      'https://i.ibb.co/f8R94JB/layer4.png',
+      'https://i.ibb.co/y4dmZt2/layer5.png'
+    ],
+    [.1,.3,.6,1], //Layer strengths
+    [256,128], //Base width and height
+    [16,32], //Overlap width and height
+    [256,128] //Display width and height
+  );
 }

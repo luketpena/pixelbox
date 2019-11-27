@@ -3,6 +3,9 @@ let mousePos = [0,0]; //actual coordinates
 let mouseMov = [0,0]; //movement from -1 to 1
 let frameList = [];
 
+let smoothing = .05;
+let smoothingActive = false;
+
 $(document).ready(()=>{
   pbRun();
 })
@@ -53,20 +56,50 @@ function pbCreate (target,bkg,images,str,size,overlap,display) {
 
 function pbRun () {
   //Adjust what the page size is
-
   $(window).resize(()=>{
     pageSize = [$(window).width(),$(window).height()];
   });
   //Find the mousePos and calculate mouseMov
   $(document).mousemove(()=>{
     mousePos = [event.pageX,event.pageY];
-    mouseMov = [
-      ((mousePos[0]/pageSize[0])*2)-1,
-      ((mousePos[1]/pageSize[1])*2)-1
-    ];
+    if (smoothing===1) {
+      mouseMov = [
+        ((mousePos[0]/pageSize[0])*2)-1,
+        ((mousePos[1]/pageSize[1])*2)-1
+      ];
+    } else if (!smoothingActive) {
+      smoothingActive = true;
+      console.log('Smoothing START');
+      smoothMove();
+    }
     //Update frames
     pbUpdate();
   });
+}
+
+function smoothMove () {
+  let targetPos = [
+    ((mousePos[0]/pageSize[0])*2)-1,
+    ((mousePos[1]/pageSize[1])*2)-1
+  ];
+
+  let active = false;
+  for (let i=0; i<=1; i++) {
+    if (Math.abs(mouseMov[i]-targetPos[i])>.001) {
+      mouseMov[i] += (targetPos[i]-mouseMov[i])*smoothing;
+      active = true;
+    }
+  }
+
+  if (!active) {
+    mouseMov[0] = targetPos[0];
+    mouseMov[1] = targetPos[1];
+    smoothingActive = false;
+    console.log('Smoothing END');
+  } else {
+    setTimeout(smoothMove,10);
+  }
+  pbUpdate();
 }
 
 function pbUpdate () {
@@ -77,8 +110,8 @@ function pbUpdate () {
     //Find the positions of the frame
     for (let j=0; j<frame.layerCount; j++) {
 
-       let layerX = -Math.round(frame.overlap[0]*(frame.str[j]*frame.ratio[0])*mouseMov[0]);
-       let layerY = -Math.round(frame.overlap[1]*(frame.str[j]*frame.ratio[1])*mouseMov[1]);
+       let layerX = -(frame.overlap[0]*(frame.str[j]*frame.ratio[0])*mouseMov[0]);
+       let layerY = -(frame.overlap[1]*(frame.str[j]*frame.ratio[1])*mouseMov[1]);
        frame.layers[j].css('transform',`translate(
            ${layerX}px,
            ${layerY}px`)
